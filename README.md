@@ -160,5 +160,6 @@ Because I spent too much time already 😓
 - Remove the `AutoDetectDataType` in the parsing of custom settings with a map of sorts. The risk is too great.
 - Fix the multitude of bugs I'm sure are present.
 - Document the WebApi and the `ISettingsApi` fully.
+- Add constraints to my attributes.
 
 **All in all this was waaaay too much work, but I had a blast doing it.**
