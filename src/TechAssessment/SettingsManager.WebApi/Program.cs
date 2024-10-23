@@ -1,4 +1,4 @@
-using SettingsManager.Api.ServiceExtensions;
+using AcmeProduct.Api.ServiceExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

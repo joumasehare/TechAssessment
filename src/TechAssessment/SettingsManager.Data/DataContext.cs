@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 
-namespace SettingsManager.Data;
+namespace AcmeProduct.Data;
 
 public class DataContext(DbContextOptions contextOptions) : DbContext(contextOptions)
 {

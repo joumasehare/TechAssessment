@@ -1,6 +1,6 @@
-﻿using SettingsManager.Api.Settings;
+﻿using AcmeProduct.Api.Settings;
 
-namespace SettingsManager.Api.Models.Settings;
+namespace AcmeProduct.Api.Models.Settings;
 
 [SettingEntity("Host")]
 public class HostSettings

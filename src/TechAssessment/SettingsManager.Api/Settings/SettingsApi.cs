@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
 using System.Text.RegularExpressions;
-using SettingsManager.Api.Exceptions;
-using SettingsManager.Common.Settings;
-using SettingsManager.Data;
-using SettingsManager.Domain.Models.Settings;
+using AcmeProduct.Api.Exceptions;
+using AcmeProduct.Common.Settings;
+using AcmeProduct.Data;
+using AcmeProduct.Domain.Models.Settings;
 
-namespace SettingsManager.Api.Settings;
+namespace AcmeProduct.Api.Settings;
 
 public class SettingsApi(IRepository<Setting, int> settingRepository) : ISettingsApi
 {

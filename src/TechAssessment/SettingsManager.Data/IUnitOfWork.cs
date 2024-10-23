@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace SettingsManager.Data;
+namespace AcmeProduct.Data;
 
 public interface IUnitOfWork : IDisposable
 {

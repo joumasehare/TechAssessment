@@ -1,10 +1,10 @@
-﻿using SettingsManager.Api.Exceptions;
-using SettingsManager.Api.Models.Settings.Legacy;
+﻿using AcmeProduct.Api.Exceptions;
+using AcmeProduct.Api.Models.Settings.Legacy;
 using System.Xml.Serialization;
 using System.Xml;
-using SettingsManager.Common.Settings;
+using AcmeProduct.Common.Settings;
 
-namespace SettingsManager.Api.Settings.Legacy;
+namespace AcmeProduct.Api.Settings.Legacy;
 
 public interface ILegacySettingImporter
 {

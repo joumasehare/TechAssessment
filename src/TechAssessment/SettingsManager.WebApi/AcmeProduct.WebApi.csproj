@@ -13,8 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SettingsManager.Api\SettingsManager.Api.csproj" />
-    <ProjectReference Include="..\SettingsManager.Web.Common\SettingsManager.Web.Common.csproj" />
+    <ProjectReference Include="..\SettingsManager.Api\AcmeProduct.Api.csproj" />
   </ItemGroup>
 
 </Project>

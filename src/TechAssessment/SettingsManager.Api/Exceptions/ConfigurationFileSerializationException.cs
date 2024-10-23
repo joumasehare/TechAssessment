@@ -1,4 +1,4 @@
-﻿namespace SettingsManager.Api.Exceptions;
+﻿namespace AcmeProduct.Api.Exceptions;
 
 public class ConfigurationFileSerializationException(string? message = ConfigurationFileSerializationException.DefaultMessage, Exception? innerException = null) : Exception(message, innerException)
 {

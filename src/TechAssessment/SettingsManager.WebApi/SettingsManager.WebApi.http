@@ -1,6 +1,6 @@
-@SettingsManager.WebApi_HostAddress = http://localhost:5078
+@AcmeProduct.WebApi_HostAddress = http://localhost:5078
 
-GET {{SettingsManager.WebApi_HostAddress}}/api/settings
+GET {{AcmeProduct.WebApi_HostAddress}}/api/settings
 Accept: application/json
 
 ###

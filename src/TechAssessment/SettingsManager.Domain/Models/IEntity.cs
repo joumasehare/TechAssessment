@@ -1,4 +1,4 @@
-﻿namespace SettingsManager.Domain.Models;
+﻿namespace AcmeProduct.Domain.Models;
 
 public interface IEntity<TIdentifier>
 {

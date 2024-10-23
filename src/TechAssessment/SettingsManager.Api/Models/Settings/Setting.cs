@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SettingsManager.Common.Settings;
+using AcmeProduct.Common.Settings;
 
-namespace SettingsManager.Api.Models.Settings
+namespace AcmeProduct.Api.Models.Settings
 {
     public class Setting
     {

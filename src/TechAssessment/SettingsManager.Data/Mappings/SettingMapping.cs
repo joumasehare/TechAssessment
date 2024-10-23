@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SettingsManager.Domain.Models.Settings;
+using AcmeProduct.Domain.Models.Settings;
 
-namespace SettingsManager.Data.Mappings;
+namespace AcmeProduct.Data.Mappings;
 
 internal class SettingMapping : IEntityTypeConfiguration<Setting>
 {

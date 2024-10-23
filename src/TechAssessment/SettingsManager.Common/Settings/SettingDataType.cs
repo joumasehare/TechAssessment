@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SettingsManager.Common.Settings;
+namespace AcmeProduct.Common.Settings;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SettingDataType : byte

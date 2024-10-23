@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>SettingsManager.WebApi</name>
+        <name>AcmeProduct.WebApi</name>
     </assembly>
     <members>
-        <member name="M:SettingsManager.WebApi.Controllers.SettingsController.Import(Microsoft.AspNetCore.Http.IFormFile)">
+        <member name="M:AcmeProduct.WebApi.Controllers.SettingsController.Import(Microsoft.AspNetCore.Http.IFormFile)">
             <summary>
             Uploads, parses, and saves settings from the legacy format.
             </summary>
             <param name="settingFile">The legacy settings file</param>
             <returns>A result of the import process</returns>
         </member>
-        <member name="M:SettingsManager.WebApi.Controllers.SettingsController.SetSetting(System.String,SettingsManager.Common.Settings.SettingDataType,System.String)">
+        <member name="M:AcmeProduct.WebApi.Controllers.SettingsController.SetSetting(System.String,AcmeProduct.Common.Settings.SettingDataType,System.String)">
             <summary>
             Sets a setting from a string value.
             </summary>
@@ -20,32 +20,32 @@
             <param name="value">The string representation of the value</param>
             <returns></returns>
         </member>
-        <member name="M:SettingsManager.WebApi.Controllers.SettingsController.GetSetting(System.String)">
+        <member name="M:AcmeProduct.WebApi.Controllers.SettingsController.GetSetting(System.String)">
             <summary>
             Gets a setting by key. It will always return the string serialized version of the value.
             </summary>
             <param name="key">A key to uniquely identify a setting. A key must follow the prescribed format of Group.Group.Group.Key</param>
             <returns></returns>
         </member>
-        <member name="M:SettingsManager.WebApi.Controllers.SettingsController.GetHostSettings">
+        <member name="M:AcmeProduct.WebApi.Controllers.SettingsController.GetHostSettings">
             <summary>
             Gets a structured representation of the HostSettings collection of settings.
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SettingsManager.WebApi.Controllers.SettingsController.GetClientSettings">
+        <member name="M:AcmeProduct.WebApi.Controllers.SettingsController.GetClientSettings">
             <summary>
             Gets a structured representation of the ProductClientSettings collection of settings.
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SettingsManager.WebApi.Controllers.SettingsController.GetEmailSettings">
+        <member name="M:AcmeProduct.WebApi.Controllers.SettingsController.GetEmailSettings">
             <summary>
             Gets a structured representation of the EmailConfiguration collection of settings.
             </summary>
             <returns></returns>
         </member>
-        <member name="M:SettingsManager.WebApi.Controllers.SettingsController.GetSettingsInGroup(System.String,System.Boolean)">
+        <member name="M:AcmeProduct.WebApi.Controllers.SettingsController.GetSettingsInGroup(System.String,System.Boolean)">
             <summary>
             Gets a list of settings that are in a group and optionally of a group. By default, it will return child groups as well.
             </summary>

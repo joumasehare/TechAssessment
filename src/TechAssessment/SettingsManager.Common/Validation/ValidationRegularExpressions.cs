@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SettingsManager.Common.Validation
+namespace AcmeProduct.Common.Validation
 {
     public static class ValidationRegularExpressions
     {

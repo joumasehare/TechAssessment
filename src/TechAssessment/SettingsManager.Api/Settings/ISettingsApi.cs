@@ -1,7 +1,7 @@
-﻿using SettingsManager.Api.Models.Settings;
-using SettingsManager.Common.Settings;
+﻿using AcmeProduct.Api.Models.Settings;
+using AcmeProduct.Common.Settings;
 
-namespace SettingsManager.Api.Settings;
+namespace AcmeProduct.Api.Settings;
 
 public interface ISettingsApi
 {

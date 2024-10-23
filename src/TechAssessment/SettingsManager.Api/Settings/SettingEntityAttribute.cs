@@ -1,6 +1,6 @@
-﻿using SettingsManager.Common.Settings;
+﻿using AcmeProduct.Common.Settings;
 
-namespace SettingsManager.Api.Settings;
+namespace AcmeProduct.Api.Settings;
 
 public class SettingEntityAttribute(string group) : Attribute
 {

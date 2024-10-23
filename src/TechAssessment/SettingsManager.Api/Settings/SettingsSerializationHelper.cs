@@ -1,9 +1,9 @@
 ﻿using System.Text.RegularExpressions;
-using SettingsManager.Api.Exceptions;
-using SettingsManager.Common.Settings;
-using SettingsManager.Common.Validation;
+using AcmeProduct.Api.Exceptions;
+using AcmeProduct.Common.Settings;
+using AcmeProduct.Common.Validation;
 
-namespace SettingsManager.Api.Settings;
+namespace AcmeProduct.Api.Settings;
 
 public static class SettingsSerializationHelper
 {

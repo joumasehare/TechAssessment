@@ -1,3 +1,3 @@
-﻿namespace SettingsManager.Api.Exceptions;
+﻿namespace AcmeProduct.Api.Exceptions;
 
 public class SettingKeyException(string message) : Exception(message) { }

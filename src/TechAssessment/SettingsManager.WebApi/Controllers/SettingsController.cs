@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SettingsManager.Api.Exceptions;
-using SettingsManager.Api.Models.Settings;
-using SettingsManager.Api.Models.Settings.Legacy;
-using SettingsManager.Api.Settings;
-using SettingsManager.Api.Settings.Legacy;
-using SettingsManager.Common.Settings;
+using AcmeProduct.Api.Exceptions;
+using AcmeProduct.Api.Models.Settings;
+using AcmeProduct.Api.Models.Settings.Legacy;
+using AcmeProduct.Api.Settings;
+using AcmeProduct.Api.Settings.Legacy;
+using AcmeProduct.Common.Settings;
 
-namespace SettingsManager.WebApi.Controllers;
+namespace AcmeProduct.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

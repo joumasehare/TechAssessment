@@ -11,8 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SettingsManager.Data\SettingsManager.Data.csproj" />
-    <ProjectReference Include="..\SettingsManager.Domain\SettingsManager.Domain.csproj" />
+    <ProjectReference Include="..\SettingsManager.Common\AcmeProduct.Common.csproj" />
+    <ProjectReference Include="..\SettingsManager.Data\AcmeProduct.Data.csproj" />
+    <ProjectReference Include="..\SettingsManager.Domain\AcmeProduct.Domain.csproj" />
   </ItemGroup>
 
 </Project>

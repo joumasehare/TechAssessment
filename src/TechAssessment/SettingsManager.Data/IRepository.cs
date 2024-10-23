@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SettingsManager.Domain.Models;
+using AcmeProduct.Domain.Models;
 using System.Linq.Expressions;
 
-namespace SettingsManager.Data;
+namespace AcmeProduct.Data;
 
 public interface IRepository<TEntity, in TIdentifier> where TEntity : class, IEntity<TIdentifier>
 {

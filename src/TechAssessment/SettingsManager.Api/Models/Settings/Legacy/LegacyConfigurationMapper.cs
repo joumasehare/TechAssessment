@@ -1,6 +1,6 @@
-﻿using SettingsManager.Common.Settings;
+﻿using AcmeProduct.Common.Settings;
 
-namespace SettingsManager.Api.Models.Settings.Legacy;
+namespace AcmeProduct.Api.Models.Settings.Legacy;
 
 internal static class LegacyConfigurationMapper
 {

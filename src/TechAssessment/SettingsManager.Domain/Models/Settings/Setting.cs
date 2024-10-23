@@ -1,6 +1,6 @@
-﻿using SettingsManager.Common.Settings;
+﻿using AcmeProduct.Common.Settings;
 
-namespace SettingsManager.Domain.Models.Settings;
+namespace AcmeProduct.Domain.Models.Settings;
 
 public class Setting : IntIdentifiedEntity
 {

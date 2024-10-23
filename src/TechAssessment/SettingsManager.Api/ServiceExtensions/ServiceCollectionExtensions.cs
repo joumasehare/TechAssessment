@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SettingsManager.Api.Settings;
-using SettingsManager.Api.Settings.Legacy;
-using SettingsManager.Data;
+using AcmeProduct.Api.Settings;
+using AcmeProduct.Api.Settings.Legacy;
+using AcmeProduct.Data;
 
-namespace SettingsManager.Api.ServiceExtensions;
+namespace AcmeProduct.Api.ServiceExtensions;
 
 public static class ServiceCollectionExtensions
 {

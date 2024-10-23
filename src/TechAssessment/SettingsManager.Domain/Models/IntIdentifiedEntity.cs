@@ -1,4 +1,4 @@
-﻿namespace SettingsManager.Domain.Models;
+﻿namespace AcmeProduct.Domain.Models;
 
 public abstract class IntIdentifiedEntity : IEntity<int>
 {

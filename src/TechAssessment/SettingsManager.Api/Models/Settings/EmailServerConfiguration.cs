@@ -1,7 +1,7 @@
-﻿using SettingsManager.Api.Settings;
-using SettingsManager.Common.Settings;
+﻿using AcmeProduct.Api.Settings;
+using AcmeProduct.Common.Settings;
 
-namespace SettingsManager.Api.Models.Settings;
+namespace AcmeProduct.Api.Models.Settings;
 
 [SettingEntity("Host.Email")]
 public class EmailConfiguration

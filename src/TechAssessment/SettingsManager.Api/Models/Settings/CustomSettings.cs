@@ -1,6 +1,6 @@
-﻿using SettingsManager.Common.Settings;
+﻿using AcmeProduct.Common.Settings;
 
-namespace SettingsManager.Api.Models.Settings;
+namespace AcmeProduct.Api.Models.Settings;
 
 internal class CustomSetting(string key, object? value, SettingDataType dataType)
 {

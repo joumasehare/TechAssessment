@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace SettingsManager.Api.Models.Settings.Legacy;
+namespace AcmeProduct.Api.Models.Settings.Legacy;
 
 [XmlRoot(ElementName = "configuration")]
 public class ConfigurationFile
