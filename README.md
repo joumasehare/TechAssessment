@@ -2,7 +2,7 @@
 ## Foreword
 For this assessment I decided to act like I'm working on a multi layered established application called _AcmeProduct_. The nature of the product demands that multiple apps shares the same logic, so the architecture reflects this demand.
 
-PICTURE
+![AcmeOverview](https://github.com/user-attachments/assets/a0626511-c866-401d-8f4d-e174cd7a9bf5)
 
 I only implemented the basics to illustrate my approach
 - The _WebApi_ project with 1 controller.
@@ -160,3 +160,5 @@ Because I spent too much time already 😓
 - Remove the `AutoDetectDataType` in the parsing of custom settings with a map of sorts. The risk is too great.
 - Fix the multitude of bugs I'm sure are present.
 - Document the WebApi and the `ISettingsApi` fully.
+
+**All in all this was waaaay too much work, but I had a blast doing it.**
