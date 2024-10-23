@@ -48,16 +48,37 @@ public class SettingsApi(IRepository<Setting, int> settingRepository) : ISetting
     {
         GetKeyChain(key, out var localKey, out var group);
 
-        var setting = new Setting
+        try
         {
-            Group = group,
-            LocalKey = localKey,
-            SettingDataType = settingDataType,
-            Value = SettingsSerializationHelper.Serialize(settingDataType, value),
-            Id = GetExistingSettingId(key)
-        };
+            var setting = new Setting
+            {
+                Group = group,
+                LocalKey = localKey,
+                SettingDataType = settingDataType,
+                Value = SettingsSerializationHelper.Serialize(settingDataType, value),
+                Id = GetExistingSettingId(key)
+            };
 
-        settingRepository.Save(setting);
+            settingRepository.Save(setting);
+        }
+        catch (Exception ex) when (ex is UriFormatException or FormatException)
+        {
+            throw new SettingsSerializationException($"Serialization failed for key \"{key}\". {ex.Message}", ex);
+        }
+    }
+
+    public void SerializeAndSetSettingValue(string key, SettingDataType settingDataType, string? value)
+    {
+        //This is confusing but essentially is goes from string -> clr -> string. This is to re-use some validations
+        try
+        {
+            var deserializedValue = SettingsSerializationHelper.Deserialize(SettingsSerializationHelper.SettingDataTypeTypeMapping[settingDataType], value);
+            SetSettingValue(key, settingDataType, deserializedValue);
+        }
+        catch (Exception ex) when (ex is UriFormatException or FormatException)
+        {
+            throw new SettingsSerializationException($"Serialization failed for key \"{key}\". {ex.Message}", ex);
+        }
     }
 
     public void SetSettingEntity<TEntity>(TEntity entity)
@@ -122,10 +143,17 @@ public class SettingsApi(IRepository<Setting, int> settingRepository) : ISetting
             var propertyAttribute = (SettingAttribute?)propertyInfo.GetCustomAttribute(typeof(SettingAttribute));
             if (propertyAttribute is not null)
             {
+                var groupModifier = String.Empty;
+                var localKey = propertyAttribute.PartialKey;
+                if (propertyAttribute.PartialKey.Contains("."))
+                {
+                    GetKeyChain(propertyAttribute.PartialKey, out localKey, out var group);
+                    groupModifier = $".{group}";
+                }
                 settingValues.Add(new Setting()
                 {
-                    LocalKey = propertyAttribute.PartialKey,
-                    Group = entityAttribute.Group,
+                    LocalKey = localKey,
+                    Group = entityAttribute.Group + groupModifier,
                     SettingDataType = propertyAttribute.DataType,
                     Value = SettingsSerializationHelper.Serialize(propertyAttribute.DataType, propertyInfo.GetValue(instance))
                 });

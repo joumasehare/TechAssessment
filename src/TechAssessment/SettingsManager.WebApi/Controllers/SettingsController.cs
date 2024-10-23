@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SettingsManager.Api.Exceptions;
 using SettingsManager.Api.Models.Settings;
 using SettingsManager.Api.Models.Settings.Legacy;
 using SettingsManager.Api.Settings;
@@ -15,15 +16,32 @@ public class SettingsController(ILegacySettingImporter legacySettingImporter, IS
     [HttpPut("UploadLegacySettings")]
     public ActionResult<ConfigurationImportResult> Import(IFormFile settingFile)
     {
-        var result = legacySettingImporter.ParseLegacyConfigurationFile(settingFile.OpenReadStream());
-        return Ok(legacySettingImporter.ImportLegacyConfigurationFile(result));
+        try
+        {
+            var importResult = legacySettingImporter.ImportLegacyConfigurationFile(legacySettingImporter.ParseLegacyConfigurationFile(settingFile.OpenReadStream()));
+            if (!importResult.IsSuccessful)
+                return BadRequest(importResult);
+            
+            return Ok(importResult);
+        }
+        catch (Exception ex) when (ex is SettingsSerializationException or SettingKeyException)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPost]
-    public void SaveSetting(string key, SettingDataType type, string value)
+    public ActionResult SetSetting(string key, SettingDataType type, string value)
     {
-        settingsApi.SetSettingValue(key, type, value);
-        Ok();
+        try
+        {
+            settingsApi.SerializeAndSetSettingValue(key, type, value);
+            return Ok($"Setting {key} saved.");
+        }
+        catch (Exception ex) when (ex is SettingsSerializationException or SettingKeyException)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet("{key}")]

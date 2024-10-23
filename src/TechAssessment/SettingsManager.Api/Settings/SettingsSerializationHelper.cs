@@ -1,5 +1,7 @@
-﻿using SettingsManager.Api.Exceptions;
+﻿using System.Text.RegularExpressions;
+using SettingsManager.Api.Exceptions;
 using SettingsManager.Common.Settings;
+using SettingsManager.Common.Validation;
 
 namespace SettingsManager.Api.Settings;
 
@@ -14,10 +16,18 @@ public static class SettingsSerializationHelper
         {SettingDataType.Email, s =>
         {
             var emailList = (string)s;
-            //Validate
+            emailList = emailList.Trim();
+            var emailAddresses = emailList.Split(';', StringSplitOptions.RemoveEmptyEntries);
+            var cleanedAddresses = new List<string>();
+            foreach (var emailAddress in emailAddresses)
+            {
+                var trimmedEmailAddress = emailAddress.Trim();
+                if (!Regex.IsMatch(trimmedEmailAddress, ValidationRegularExpressions.EmailAddress, RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                    throw new SettingsSerializationException($"{trimmedEmailAddress} is not an email address");
 
-            //TODO: Validate
-            return emailList;
+                cleanedAddresses.Add(trimmedEmailAddress);
+            }
+            return string.Join(";", cleanedAddresses);
         }},
     };
 
@@ -27,6 +37,15 @@ public static class SettingsSerializationHelper
         {typeof(int), s => Convert.ToInt32(s)},
         {typeof(bool), s => Convert.ToBoolean(s)},
         {typeof(Uri), s => new Uri(s)}
+    };
+
+    public static readonly Dictionary<SettingDataType, Type> SettingDataTypeTypeMapping = new()
+    {
+        { SettingDataType.String, typeof(string) },
+        { SettingDataType.Int, typeof(int) },
+        { SettingDataType.Bool, typeof(bool) },
+        { SettingDataType.Uri, typeof(Uri) },
+        { SettingDataType.Email, typeof(string) },
     };
 
     public static string? Serialize(SettingDataType settingDataType, object? value)

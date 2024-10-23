@@ -11,5 +11,6 @@ public interface ISettingsApi
     List<Setting> GetSettingsInGroup(string group, bool includeSubGroups = true);
 
     void SetSettingValue<TValue>(string key, SettingDataType settingDataType, TValue value);
+    void SerializeAndSetSettingValue(string key, SettingDataType settingDataType, string? value);
     void SetSettingEntity<TEntity>(TEntity companySettings);
 }
