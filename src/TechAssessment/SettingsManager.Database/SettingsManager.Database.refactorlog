@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="172dd2a6-9783-4317-a33f-60a5e34a849a" ChangeDateTime="10/22/2024 19:11:26">
+    <Property Name="ElementName" Value="[dbo].[SettingGroup].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SettingGroup]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SettingGroupId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1b06f469-3d35-42ee-9e35-f51c24050474" ChangeDateTime="10/22/2024 19:12:18">
+    <Property Name="ElementName" Value="[dbo].[SettingGroup].[Local]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SettingGroup]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Key" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="4f146d83-e4ad-4376-b4a0-393f22532309" ChangeDateTime="10/22/2024 19:29:36">
+    <Property Name="ElementName" Value="[dbo].[Setting].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Setting]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SettingId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="ef26540f-fad7-49e6-b80d-1658916a2008" ChangeDateTime="10/22/2024 20:09:51">
+    <Property Name="ElementName" Value="[dbo].[SettingGroup].[Key]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SettingGroup]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="LocalKey" />
+  </Operation>
+</Operations>

@@ -1,0 +1,9 @@
+﻿CREATE TABLE [dbo].[Setting]
+(
+	[SettingId] INT IDENTITY NOT NULL PRIMARY KEY, 
+    [LocalKey] NVARCHAR(500) NOT NULL, 
+    [GlobalKey] NVARCHAR(500) UNIQUE NOT NULL,
+    [Domain] NVARCHAR(500) NOT NULL,
+    [SettingDataType] TINYINT NOT NULL,
+    [Value] NVARCHAR(MAX) NULL,
+)

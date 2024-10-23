@@ -1,0 +1,6 @@
+@SettingsManager.WebApi_HostAddress = http://localhost:5078
+
+GET {{SettingsManager.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
