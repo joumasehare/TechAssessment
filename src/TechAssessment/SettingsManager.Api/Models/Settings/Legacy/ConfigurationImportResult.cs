@@ -2,19 +2,13 @@
 
 public class ConfigurationImportResult
 {
-    public bool IsSuccessful => Errors.Count == 0;
+    public bool IsSuccessful => Errors.Count == 0 && FatalMessage == null;
+
     public List<ConfigurationImportValidationError> Errors { get; set; } = [];
+
     public List<string> AutoConversionResults { get; set; } = [];
 
-    public void RaiseRequiredError(string key, string section)
-    {
-        Errors.Add(new ConfigurationImportValidationError()
-        {
-            Field = key,
-            Description = "The key is required",
-            Section = section
-        });
-    }
+    public string? FatalMessage { get; set; }
 
     public void RaiseNoConversionAvailableError(string key, string section, Type concretePropertyPropertyType)
     {
@@ -35,21 +29,11 @@ public class ConfigurationImportResult
             Section = section
         });
     }
-
-    public void RaiseAddFeatureToggleError(string toggleName)
-    {
-        Errors.Add(new ConfigurationImportValidationError()
-        {
-            Field = toggleName,
-            Description = $"An error occured trying to convert feature toggle \"{toggleName}\". Please ensure that the config value is a boolean.",
-            Section = "FeatureToggles"
-        });
-    }
 }
 
 public class ConfigurationImportValidationError
 {
-    public string Section { get; set; }
-    public string Field { get; set; }
-    public string Description { get; set; }
+    public string? Section { get; set; }
+    public string? Field { get; set; }
+    public string? Description { get; set; }
 }

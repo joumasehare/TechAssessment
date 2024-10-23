@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Text.RegularExpressions;
-using AutoMapper.Internal;
 using SettingsManager.Api.Exceptions;
 using SettingsManager.Common.Settings;
 using SettingsManager.Data;
@@ -101,7 +100,7 @@ public class SettingsApi(IRepository<Setting, int> settingRepository) : ISetting
         var instance = Activator.CreateInstance(objectType);
         foreach (var propertyInfo in objectType.GetProperties())
         {
-            if (!propertyInfo.IsPublic() || !propertyInfo.CanBeSet()) continue;
+            if (!propertyInfo.CanWrite || !(propertyInfo.GetSetMethod(true) is { IsPublic: true })) continue;
 
             var propertyAttribute = (SettingAttribute?)propertyInfo.GetCustomAttribute(typeof(SettingAttribute));
             if (propertyAttribute is not null)
@@ -138,7 +137,7 @@ public class SettingsApi(IRepository<Setting, int> settingRepository) : ISetting
 
         foreach (var propertyInfo in type.GetProperties())
         {
-            if (!propertyInfo.IsPublic() || !propertyInfo.CanRead) continue;
+            if (propertyInfo.GetMethod != null && (!propertyInfo.CanRead || !propertyInfo.GetMethod.IsPublic)) continue;
 
             var propertyAttribute = (SettingAttribute?)propertyInfo.GetCustomAttribute(typeof(SettingAttribute));
             if (propertyAttribute is not null)

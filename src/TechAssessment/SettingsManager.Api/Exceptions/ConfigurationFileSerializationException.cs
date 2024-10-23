@@ -4,13 +4,7 @@ public class ConfigurationFileSerializationException(string? message = Configura
 {
     internal const string DefaultMessage = "Error during serialization of the configuration file";
 
-    public ConfigurationFileSerializationException(string message) : this(message, null)
-    {
+    public ConfigurationFileSerializationException(string message) : this(message, null) { }
 
-    }
-
-    public ConfigurationFileSerializationException(Exception innerException) : this(DefaultMessage, innerException)
-    {
-
-    }
+    public ConfigurationFileSerializationException(Exception innerException) : this(DefaultMessage, innerException) { }
 }

@@ -10,7 +10,6 @@ public interface IRepository<TEntity, in TIdentifier> where TEntity : class, IEn
 
     IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> where);
 
-    TEntity? GetDetached(TIdentifier id);
     void DetachEntity(TEntity entity);
 
     TEntity Save(TEntity entity);
@@ -31,14 +30,6 @@ public class BaseRepository<TEntity, TIdentifier>(IUnitOfWork unitOfWork) : IRep
     {
         var query = DbContext.Set<TEntity>().Where(where);
         return query;
-    }
-
-    public TEntity? GetDetached(TIdentifier id)
-    {
-        var entity = DbContext.Find<TEntity>(id);
-        if (entity != null)
-            DbContext.Entry(entity).State = EntityState.Detached;
-        return entity;
     }
 
     public void DetachEntity(TEntity entity)
