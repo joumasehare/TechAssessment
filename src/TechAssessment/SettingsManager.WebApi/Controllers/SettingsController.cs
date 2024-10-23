@@ -1,47 +1,61 @@
-﻿using System.Text;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using SettingsManager.Api.Models.Settings;
 using SettingsManager.Api.Models.Settings.Legacy;
 using SettingsManager.Api.Settings;
 using SettingsManager.Api.Settings.Legacy;
 using SettingsManager.Common.Settings;
-using SettingsManager.Web.Common.Extentions;
 
-namespace SettingsManager.WebApi.Controllers
+namespace SettingsManager.WebApi.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class SettingsController(ILegacySettingImporter legacySettingImporter, ISettingsApi settingsApi)
+    : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class SettingsController : ControllerBase
+    [HttpPut("UploadLegacySettings")]
+    public ActionResult<ConfigurationImportResult> Import(IFormFile settingFile)
     {
-        private readonly ILegacySettingImporter legacySettingImporter;
-        private readonly ISettingsApi settingsApi;
+        var result = legacySettingImporter.ParseLegacyConfigurationFile(settingFile.OpenReadStream());
+        return Ok(legacySettingImporter.ImportLegacyConfigurationFile(result));
+    }
 
-        public SettingsController(ILegacySettingImporter legacySettingImporter, ISettingsApi settingsApi)
-        {
-            this.legacySettingImporter = legacySettingImporter;
-            this.settingsApi = settingsApi;
-        }
+    [HttpPost]
+    public void SaveSetting(string key, SettingDataType type, string value)
+    {
+        settingsApi.SetSettingValue(key, type, value);
+        Ok();
+    }
 
-        [HttpPut("UploadLegacySettings")]
-        public async Task<ConfigurationImportResult> Import(IFormFile settingFile)
-        {
-            var result = legacySettingImporter.ParseLegacyConfigurationFile(settingFile.OpenReadStream());
-            return legacySettingImporter.ImportLegacyConfigurationFile(result);
-        }
+    [HttpGet("{key}")]
+    public ActionResult<Setting> GetSetting(string key)
+    {
+        if (settingsApi.GetSettingValue(key, out var value))
+            return Ok(value);
+        else
+            return NotFound();
+    }
 
-        [HttpPost()]
-        public void SaveSetting(string key, SettingDataType type, string value)
-        {
-            settingsApi.SetSettingValue(key, type, value);
-        }
+    [HttpGet("HostSettings")]
+    public ActionResult<HostSettings> GetHostSettings()
+    {
+        if (settingsApi.GetSettingsEntity<HostSettings>(out var value))
+            return Ok(value);
+        else
+            return NotFound();
+    }
 
-        [HttpGet("{key}")]
-        public ActionResult<string> GetSetting(string key)
-        {
-            if (settingsApi.GetSettingValue(key, out var value))
-                return Ok(value);
-            else
-                return NotFound();
-        }
+    [HttpGet("EmailSettings")]
+    public ActionResult<EmailConfiguration> GetEmailSettings()
+    {
+        if (settingsApi.GetSettingsEntity<EmailConfiguration>(out var value))
+            return Ok(value);
+        else
+            return NotFound();
+    }
+
+    [HttpGet("SettingsInGroup")]
+    public ActionResult<List<Setting>> GetSettingsInGroup(string group, bool includeSubGroups = true)
+    {
+        return Ok(settingsApi.GetSettingsInGroup(group, includeSubGroups));
     }
 }

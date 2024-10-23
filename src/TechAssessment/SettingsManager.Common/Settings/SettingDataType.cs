@@ -1,10 +1,13 @@
-﻿namespace SettingsManager.Common.Settings;
+﻿using System.Text.Json.Serialization;
 
-public enum SettingDataType
+namespace SettingsManager.Common.Settings;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum SettingDataType : byte
 {
-    String,
-    Email,
-    Uri,
-    Int,
-    Bool
+    String = 1,
+    Email = 2,
+    Uri = 3,
+    Int = 4,
+    Bool = 5
 }

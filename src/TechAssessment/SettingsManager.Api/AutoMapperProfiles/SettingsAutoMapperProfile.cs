@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 
-namespace SettingsManager.Api.AutoMapperProfiles
+namespace SettingsManager.Api.AutoMapperProfiles;
+
+internal class SettingsAutoMapperProfile : Profile
 {
-    internal class SettingsAutoMapperProfile : Profile
-    {
-    }
 }

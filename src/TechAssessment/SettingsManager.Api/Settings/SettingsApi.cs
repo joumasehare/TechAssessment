@@ -1,147 +1,187 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+﻿using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Serialization;
 using AutoMapper.Internal;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SettingsManager.Api.Exceptions;
-using SettingsManager.Api.Models.Settings;
-using SettingsManager.Api.Models.Settings.Legacy;
-using SettingsManager.Api.Utilities;
 using SettingsManager.Common.Settings;
 using SettingsManager.Data;
-using SettingsManager.Domain.Models;
 using SettingsManager.Domain.Models.Settings;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace SettingsManager.Api.Settings
+namespace SettingsManager.Api.Settings;
+
+public class SettingsApi(IRepository<Setting, int> settingRepository) : ISettingsApi
 {
-    public class SettingsApi(IRepository<Setting, int> settingRepository) : ISettingsApi
+    public bool GetSettingValue<TResult>(string key, out TResult? value)
     {
+        var setting = settingRepository.Get(s => s.GlobalKey == key).FirstOrDefault();
 
-
-        public bool GetSettingValue<TResult>(string key, out TResult value)
+        if (setting is null)
         {
-            throw new NotImplementedException();
+            value = default;
+            return false;
         }
 
-        public bool GetSettingValue(string key, out string? value)
+        value = SettingsSerializationHelper.Deserialize<TResult>(setting.Value);
+        return true;
+    }
+
+    public bool GetSettingValue(string key, out Models.Settings.Setting? value)
+    {
+        value = new Models.Settings.Setting(settingRepository.Get(s => s.GlobalKey == key).FirstOrDefault());
+        return !string.IsNullOrEmpty(value.GlobalKey);
+    }
+
+    public bool GetSettingsEntity<TEntity>(out TEntity? value) where TEntity : class, new()
+    {
+        value = (TEntity?)RecursivelyGetSettingValues(typeof(TEntity));
+        return value != null;
+    }
+
+    public List<Models.Settings.Setting> GetSettingsInGroup(string group, bool includeSubGroups = true)
+    {
+        if (includeSubGroups)
+            return settingRepository.Get(s => s.Group.StartsWith(group)).Select(i => new Models.Settings.Setting(i)).ToList();
+        else
+            return settingRepository.Get(s => s.Group == group).Select(i => new Models.Settings.Setting(i)).ToList();
+    }
+
+    public void SetSettingValue<TValue>(string key, SettingDataType settingDataType, TValue value)
+    {
+        GetKeyChain(key, out var localKey, out var group);
+
+        var setting = new Setting
         {
-            var setting = settingRepository.Get(s => s.GlobalKey == key).FirstOrDefault();
-            value = setting?.Value;
-            return setting != null;
+            Group = group,
+            LocalKey = localKey,
+            SettingDataType = settingDataType,
+            Value = SettingsSerializationHelper.Serialize(settingDataType, value),
+            Id = GetExistingSettingId(key)
+        };
+
+        settingRepository.Save(setting);
+    }
+
+    public void SetSettingEntity<TEntity>(TEntity entity)
+    {
+        var settingValues = new List<Setting>();
+        RecursivelySetSettingValues(typeof(TEntity), entity, ref settingValues);
+        foreach (var settingValue in settingValues)
+        {
+            settingValue.Id = GetExistingSettingId(settingValue.GlobalKey);
+            settingRepository.Save(settingValue);
         }
+    }
 
-        public void SetSettingValue<TValue>(string key, SettingDataType settingDataType, TValue value)
+    private object? RecursivelyGetSettingValues(Type objectType)
+    {
+        var entityAttribute = (SettingEntityAttribute?)Attribute.GetCustomAttribute(objectType, typeof(SettingEntityAttribute));
+        if (entityAttribute is null)
+            return default;
+
+        var instance = Activator.CreateInstance(objectType);
+        foreach (var propertyInfo in objectType.GetProperties())
         {
-            GetKeyChain(key, out var localKey, out var domain);
+            if (!propertyInfo.IsPublic() || !propertyInfo.CanBeSet()) continue;
 
-            var setting = new Setting
+            var propertyAttribute = (SettingAttribute?)propertyInfo.GetCustomAttribute(typeof(SettingAttribute));
+            if (propertyAttribute is not null)
             {
-                Domain = domain,
-                LocalKey = localKey,
-                SettingDataType = settingDataType,
-                Value = SettingsSerializationHelper.Serialize(settingDataType, value)
-            };
+                var setting = settingRepository
+                    .Get(s => s.GlobalKey == $"{entityAttribute.Group}.{propertyAttribute.PartialKey}")
+                    .FirstOrDefault();
 
-            setting.Id = GetExistingSettingId(key);
-
-            settingRepository.Save(setting);
-        }
-
-        public void SaveSettingEntity<TEntity>(TEntity entity)
-        {
-            var settingValues = new List<Setting>();
-            RecursivelyGetSettingValues(typeof(TEntity), entity, ref settingValues);
-            foreach (var settingValue in settingValues)
-            {
-                settingValue.Id = GetExistingSettingId(settingValue.GlobalKey);
-                settingRepository.Save(settingValue);
-            }
-        }
-
-        private static void RecursivelyGetSettingValues(Type type, object? instance, ref List<Setting> settingValues)
-        {
-            if (instance is null)
-                return;
-
-            var entityAttribute = (SettingEntityAttribute?)Attribute.GetCustomAttribute(type, typeof(SettingEntityAttribute));
-            if (entityAttribute is null)
-                return;
-
-            foreach (var propertyInfo in type.GetProperties())
-            {
-                if (!propertyInfo.IsPublic() || !propertyInfo.CanRead) continue;
-
-                var propertyAttribute = (SettingAttribute?)propertyInfo.GetCustomAttribute(typeof(SettingAttribute));
-                if (propertyAttribute is not null)
+                if (setting is not null)
                 {
-                    settingValues.Add(new Setting()
-                    {
-                        LocalKey = propertyAttribute.PartialKey,
-                        Domain = entityAttribute.Domain,
-                        SettingDataType = propertyAttribute.DataType,
-                        Value = SettingsSerializationHelper.Serialize(propertyAttribute.DataType, propertyInfo.GetValue(instance))
-                    });
+                    propertyInfo.SetValue(instance, SettingsSerializationHelper.Deserialize(propertyInfo.PropertyType, setting.Value));
                 }
-                else
+            }
+            else
+            {
+                if (propertyInfo.GetCustomAttribute(typeof(ChildSettingEntityAttribute)) is not null)
                 {
-                    if (propertyInfo.GetCustomAttribute(typeof(ChildSettingEntityAttribute)) is not null)
-                    {
-                        RecursivelyGetSettingValues(propertyInfo.PropertyType, propertyInfo.GetValue(instance), ref settingValues);
-                    }
+                    propertyInfo.SetValue(instance, RecursivelyGetSettingValues(propertyInfo.PropertyType));
                 }
             }
         }
 
-        private int GetExistingSettingId(string key)
+        return instance;
+    }
+
+    private static void RecursivelySetSettingValues(Type type, object? instance, ref List<Setting> settingValues)
+    {
+        if (instance is null)
+            return;
+
+        var entityAttribute = (SettingEntityAttribute?)Attribute.GetCustomAttribute(type, typeof(SettingEntityAttribute));
+        if (entityAttribute is null)
+            return;
+
+        foreach (var propertyInfo in type.GetProperties())
         {
-            var existing = settingRepository.Get(s => s.GlobalKey == key).FirstOrDefault();
-            if (existing != null)
+            if (!propertyInfo.IsPublic() || !propertyInfo.CanRead) continue;
+
+            var propertyAttribute = (SettingAttribute?)propertyInfo.GetCustomAttribute(typeof(SettingAttribute));
+            if (propertyAttribute is not null)
             {
-                return existing.Id;
+                settingValues.Add(new Setting()
+                {
+                    LocalKey = propertyAttribute.PartialKey,
+                    Group = entityAttribute.Group,
+                    SettingDataType = propertyAttribute.DataType,
+                    Value = SettingsSerializationHelper.Serialize(propertyAttribute.DataType, propertyInfo.GetValue(instance))
+                });
             }
+            else
+            {
+                if (propertyInfo.GetCustomAttribute(typeof(ChildSettingEntityAttribute)) is not null)
+                {
+                    RecursivelySetSettingValues(propertyInfo.PropertyType, propertyInfo.GetValue(instance), ref settingValues);
+                }
+            }
+        }
+    }
 
-            if (settingRepository.Get(s => s.Domain == key).Any())
-                throw new SettingKeyException($"The Setting Key \"{key}\" is already defined as a group. Keys must refer to a Setting key, not a Group key.");
-
-            return 0;
+    private int GetExistingSettingId(string key)
+    {
+        var existing = settingRepository.Get(s => s.GlobalKey == key).FirstOrDefault();
+        if (existing != null)
+        {
+            settingRepository.DetachEntity(existing);
+            return existing.Id;
         }
 
-        private static List<string> GetKeyChain(string key, out string localKey, out string domain)
+        if (settingRepository.Get(s => s.Group == key).Any())
+            throw new SettingKeyException($"The Setting Key \"{key}\" is already defined as a group. Keys must refer to a Setting key, not a Group key.");
+
+        return 0;
+    }
+
+    private static List<string> GetKeyChain(string key, out string localKey, out string group)
+    {
+        var lastIndex = key.LastIndexOf('.');
+        if (lastIndex == -1 || Regex.IsMatch(key, "(\\.{2,})+( )+(\\.$)+", RegexOptions.Singleline))
+            throw new SettingKeyException($"The Setting Key \"{key}\" does not meet the requirements to be a key. " +
+                                          $"{Environment.NewLine}Keys must refer to a Setting key, not a Group key." +
+                                          $"{Environment.NewLine}Keys must also not contain whitespace such as \"Group.My SubGroup.SettingKey\"" +
+                                          $"{Environment.NewLine}Keys must not contain blank groups such as \"Group.MySubGroup..SettingKey\"" +
+                                          $"{Environment.NewLine}Keys must specify a Setting Key, and not a blank key such as \"Group.MySubGroup.\"");
+
+        var result = new List<string>();
+
+        string? previousPart = null;
+        var keyParts = key.Split('.');
+        for (int k = 0; k < keyParts.Length - 1; k++)
         {
-            var lastIndex = key.LastIndexOf('.');
-            if (lastIndex == -1 || Regex.IsMatch(key, "(\\.{2,})+( )+(\\.$)+", RegexOptions.Singleline))
-                throw new SettingKeyException($"The Setting Key \"{key}\" does not meet the requirements to be a key. " +
-                                              $"{Environment.NewLine}Keys must refer to a Setting key, not a Group key." +
-                                              $"{Environment.NewLine}Keys must also not contain whitespace such as \"Group.My SubGroup.SettingKey\"" +
-                                              $"{Environment.NewLine}Keys must not contain blank groups such as \"Group.MySubGroup..SettingKey\"" +
-                                              $"{Environment.NewLine}Keys must specify a Setting Key, and not a blank key such as \"Group.MySubGroup.\"");
+            if (previousPart == null)
+                previousPart = keyParts[k];
+            else
+                previousPart += $".{keyParts[k]}";
 
-            var result = new List<string>();
-
-            string? previousPart = null;
-            var keyParts = key.Split('.');
-            for (int k = 0; k < keyParts.Length - 1; k++)
-            {
-                if (previousPart == null)
-                    previousPart = keyParts[k];
-                else
-                    previousPart += $".{keyParts[k]}";
-
-                result.Add(previousPart);
-            }
-
-            localKey = keyParts[^1];
-            domain = key.Remove(lastIndex, localKey.Length + 1);
-
-            return result;
+            result.Add(previousPart);
         }
+
+        localKey = keyParts[^1];
+        group = key.Remove(lastIndex, localKey.Length + 1);
+
+        return result;
     }
 }

@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using SettingsManager.Api.ServiceExtensions;
 
 var builder = WebApplication.CreateBuilder(args);

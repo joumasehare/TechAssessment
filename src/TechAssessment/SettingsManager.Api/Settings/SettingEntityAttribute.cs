@@ -1,6 +1,18 @@
-﻿namespace SettingsManager.Api.Settings;
+﻿using SettingsManager.Common.Settings;
 
-public class SettingEntityAttribute(string domain) : Attribute
+namespace SettingsManager.Api.Settings;
+
+public class SettingEntityAttribute(string group) : Attribute
 {
-    public string Domain { get; } = domain;
+    public string Group { get; } = group;
+}
+
+public class SettingAttribute(SettingDataType dataType, string partialKey) : Attribute
+{
+    public SettingDataType DataType { get; } = dataType;
+    public string PartialKey { get; } = partialKey;
+}
+
+public class ChildSettingEntityAttribute : Attribute
+{
 }

@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using Microsoft.AspNetCore.Http;
 
-namespace SettingsManager.Web.Common.Extentions
+namespace SettingsManager.Web.Common.Extentions;
+
+public static class FormFileExtensions
 {
-    public static class FormFileExtensions
+    public static async Task<string> ReadAsStringAsync(this IFormFile file)
     {
-        public static async Task<string> ReadAsStringAsync(this IFormFile file)
+        var result = new StringBuilder();
+        using (var reader = new StreamReader(file.OpenReadStream()))
         {
-            var result = new StringBuilder();
-            using (var reader = new StreamReader(file.OpenReadStream()))
-            {
-                while (reader.Peek() >= 0)
-                    result.AppendLine(await reader.ReadLineAsync());
-            }
-            return result.ToString();
+            while (reader.Peek() >= 0)
+                result.AppendLine(await reader.ReadLineAsync());
         }
+        return result.ToString();
     }
 }
